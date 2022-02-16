@@ -2,6 +2,8 @@
 
 ## A short description of the project
 
+Project that aims to select the best buyers from a chain of stores in order to create a loyalty program.
+
 #### This project was made by Felipe S. Pedrosa.
 
 # 1. Business Problem.
