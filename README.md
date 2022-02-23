@@ -11,44 +11,47 @@ Project that aims to select the best buyers from a chain of stores in order to c
 
 # 1. Business Problem.!
 
-This project is to meet an insurance company demand that has provided health insurance to its customers and now they need to build a model to predict whether the policyholders (customers) from past year will also be interested in vehicle insurance. With the limited resources to contact the potential customers interested in vehicle insurance it is necessary to build a customers rank to enhance customer adhesion performance. This is a learning to rank project (LTR).
+The company All in One Place is a Multibrand Outlet company, that is, it sells several second-line products from brands at a lower price, through an e-commerce. Based on this perception, the marketing time will launch a loyalty program for the best customers of the base, called Insiders. But time does not have an advanced knowledge in data analysis to elect program participants.
+As a result for this project, you are expected to deliver a list of people eligible to participate in the Insiders program, along with a report answering the following questions:
+
+1. Who are the people eligible to participate in the Insiders program?
+1. How many customers will be part of the group?
+1. What are the main characteristics of these customers?
+1. What percentage of revenue contribution comes from Insiders?
+1. What is the billing expectation of this group for the coming months?
+1. What are the conditions for a person to be eligible for Insiders?
+1. What are the conditions for a person to be removed from Insiders?
+1. What is the guarantee that the Insiders program is better than the rest of the base?
+1. What actions can the marketing team take to increase revenue? 
 
 
 # 2. Business Assumptions.
 
-The Marketing Manager stated that they are only able to offer adequate treatment during sales campaign - including calls, invitations for conversations in person and special attention to clarify doubts - up to 40% of last year's health insurance policyholders.
-Therefore, the company wants to obtain an ordered list of customers most likely to purchase vehicle insurance to maximize customer conversion.
+In just over 1 year of operation, the marketing team realized that some customers from its base buy more expensive products, with high frequency and end up contributing a significant portion of the company's revenue.
+You are part of the All In One Place team of data scientists, who need to determine who are eligible customers to participate in Insiders. In possession of this list, the Marketing team will carry out a sequence of personalized and exclusive actions for the group, in order to increase revenue and purchase frequency.
 
 # 3. Solution Strategy
 
-When each customer signed up for health insurance during last year, they also completed a survey with relevant data to a car insurance decision-making, such as ownership of a driver's license, vehicle age, wheter the customer got his/ her vehicle damaged in the past, among other information.
-The result of this survey will guide the creation of a machine learning model that will produce an ordered list of customers most likely to acquire a car insurance.
-The strategy to solve this challenge was:
+In possession of the groups, where a sale transaction took place, which took place between November 2016 and December 2017, we thought of grouping data with the premise of each representation line that the reference pro is the amount spent in the company in favor of the frequency of purchase, how many products in total you have purchased or any other variable.
 
  **Step 01. Data description**
 
-The first step was to collect the data which were at a postgreSQL database in the AWS Cloud and understand the data.
-There are 304887 customers records, containing different attributes such as: "gender", "age", "driving license", "vehicle age", "policy sales channel", among others; these data show the customer's final interest in taking out car insurance, based on past experiences.
-Important to mention that 20% of data were extracted (randomly, but stratified by response) for further testing of the final model.
+When evaluating the dataset, the first situation of attention was that 135080 customers had an empty customer_id out of a total of 541909 customers. To get around the loss of a large number of buyers, it was made that each empty element was added the maximum number of customer_id valid plus 1, thus filling all the missing ones but putting a bias that each person not correctly filled in the database has bought only once. Finally, with the result not being satisfactory, they were just permanently excluded, reducing the number of data but without the imposed bias, greatly improving the grouping.
 
-**Step 02. Feature engineering**
+**Step 02. Data filtering:**
 
-The responses of the "vehicle age" feature were changed to the snake_case pattern (for later one hot encoding) and the responses of the "vehicle damage" feature were also changed: the originals "Yes" and "No" by 1 and 0, respectively.
+As many of the unit prices were set to 0, we put as a filtering all purchase values above 0.04 cents, in addition to excluding several stock_codes where the code was not the purchase or return code of the products.
 
-**Step 03. Data filtering:**
+**Step 03. Feature Engineering:**
 
-Soon after, the check for missing values and outliers took place.
+We created some new columns to help the model, these being the gross_revenue, recency( Day from last purchase), quantity of purchased, Quantity total of items purchased , Quantity of products purchased, Avg Ticket Value, Frequency Purchase, Numbers of Returns.
 
 **Step 04. Exploratory data analysis**
 
-With the help of SweetViz, the first exploratory data analysis was carried out to bring up some relevant insights.
-Furthermore, specific analyzes were also carried out to understand the influence of some features on the customer's final decision to acquire a vehicle insurance.
+In this step, we did the space study, that is, we rescaled the columns and created an embeeding with UMAP and the reduction component was the dataframe, previously training with Random Forest Regressor and putting Gross_revenue as the reference variable.
 
-**Step 05. Data preparation**
 
-After analyzing the data, standard and minmax scalers were applied, in addition to target and frequency encoders for some features. All details are available on the notebook.
-
-**Step 06. Feature selection**
+**Step 05. Hyperparameter fine tunning** -- Começar desde este ponto
 
 The next step was to identify the most relevant features for training machine learning models. For this, in addition to the knowledge acquired during EDA, the Python implementations of the Boruta R package (https://github.com/scikit-learn-contrib/boruta_py) was used.
 The features chosen by Boruta are described in the notebook.
